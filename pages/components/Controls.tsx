@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { AppSelect } from "../../styles/Select";
+import { Instrument } from "./Instrument";
 
 export default function Controls() {
   const beatOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -44,7 +46,7 @@ export default function Controls() {
       </div>
       <div className="beats-per-bar-select">
         <label htmlFor="beats">Beats</label>
-        <select
+        <AppSelect
           name="beats"
           onChange={(e) => handleBeatsChange(e.target.value)}
           value={beats}
@@ -52,12 +54,12 @@ export default function Controls() {
           {beatOptions.map((v) => (
             <option value={v}>{v}</option>
           ))}
-        </select>
+        </AppSelect>
       </div>
 
       <div className="bars-select">
         <label htmlFor="bars">Bars</label>
-        <select
+        <AppSelect
           name="bars"
           onChange={(e) => handleBarsChange(e.target.value)}
           value={bars}
@@ -65,7 +67,11 @@ export default function Controls() {
           {barOptions.map((b) => (
             <option value={b}>{b}</option>
           ))}
-        </select>
+        </AppSelect>
+      </div>
+
+      <div>
+        <Instrument tempo={tempo} bars={bars} beats={beats} />
       </div>
     </div>
   );
