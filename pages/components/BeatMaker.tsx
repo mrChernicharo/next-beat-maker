@@ -23,16 +23,16 @@ export function BeatMaker() {
   const initialNotes: INote[] = [
     { play: false, bar: 1, beat: 1 },
     { play: false, bar: 1, beat: 2 },
-    { play: false, bar: 2, beat: 3 },
-    { play: false, bar: 2, beat: 4 },
-    { play: false, bar: 3, beat: 5 },
-    { play: false, bar: 3, beat: 6 },
-    { play: false, bar: 4, beat: 7 },
-    { play: false, bar: 4, beat: 8 },
+    { play: false, bar: 2, beat: 1 },
+    { play: false, bar: 2, beat: 2 },
+    { play: false, bar: 3, beat: 1 },
+    { play: false, bar: 3, beat: 2 },
+    { play: false, bar: 4, beat: 1 },
+    { play: false, bar: 4, beat: 2 },
   ];
   const initialTrack: Track = {
-    beats: 4,
-    bars: 2,
+    beats: 2,
+    bars: 4,
     intrument: "hi-hat",
     notes: initialNotes,
     playing: false,
@@ -49,8 +49,8 @@ export function BeatMaker() {
     for (let i = 0; i < trackLength; i++) {
       notes.push({
         play: false,
-        beat: i + 1,
-        bar: Math.ceil((i + 1) / bars),
+        bar: Math.ceil((i + 1) / beats),
+        beat: (i % beats) + 1,
       });
     }
     return notes;
@@ -64,19 +64,23 @@ export function BeatMaker() {
     console.log(val);
     setTempo(val);
   }
+
   function handleBeatsChange(val) {
+    console.log("beats " + val);
     const newNotes = resetTrackNotes(+val, track.bars);
     setTrack({ ...track, beats: +val, notes: newNotes });
   }
 
   function handleBarsChange(val) {
+    console.log("bars " + val);
+
     const newNotes = resetTrackNotes(track.beats, +val);
     setTrack({ ...track, bars: +val, notes: newNotes });
   }
 
   function updateNote(i: number, note: INote) {
     const updatedTrack: INote[] = Object.assign([], track.notes, {
-      [i]: { play: !note.play, beat: note.beat, bar: note.bar },
+      [i]: { play: !note.play, bar: note.bar, beat: note.beat },
     });
 
     setTrack({ ...track, notes: updatedTrack });

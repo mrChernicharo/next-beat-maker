@@ -14,7 +14,9 @@ export default function Note({ index, note, update }: NoteProps) {
   //
   return (
     <AppNote play={note.play} onClick={() => update(index, note)}>
-      <div>{note.beat}</div>
+      <div>
+        {note.bar}:{note.beat}
+      </div>
     </AppNote>
   );
 }
