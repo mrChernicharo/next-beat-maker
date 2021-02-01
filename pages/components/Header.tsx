@@ -1,6 +1,10 @@
 import React from "react";
-import { AppHeader } from "../../styles/Header";
+import { AppHeader } from "../../styles/AppHeader";
 
 export default function Header() {
-  return <AppHeader />;
+  return (
+    <div>
+      <AppHeader>Next Beat Maker</AppHeader>
+    </div>
+  );
 }
