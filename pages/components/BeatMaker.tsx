@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { InstrumentRow } from "../../styles/InstrumentRow";
 import { AppSelect, AppSelectContainer } from "../../styles/Select";
 import AppNote from "./Note";
+import PlayPause from "./PlayPause";
 
 export interface INote {
   play: boolean;
@@ -40,6 +41,7 @@ export function BeatMaker() {
 
   const [tempo, setTempo] = useState(120);
   const [track, setTrack] = useState(initialTrack);
+  const [isPlaying, setIsPlaying] = useState(false);
   // const [notes, setNotes] = useState(initialNotes);
 
   const resetTrackNotes = (beats: number, bars: number) => {
@@ -60,6 +62,10 @@ export function BeatMaker() {
     console.log(track);
   }, [track.bars, track.beats, track.notes]);
 
+  useEffect(() => {
+    console.log("playing -> " + isPlaying);
+  }, [isPlaying]);
+
   function handleTempoSlider(val) {
     console.log(val);
     setTempo(val);
@@ -76,6 +82,10 @@ export function BeatMaker() {
 
     const newNotes = resetTrackNotes(track.beats, +val);
     setTrack({ ...track, bars: +val, notes: newNotes });
+  }
+
+  function handlePlay() {
+    setIsPlaying(!isPlaying);
   }
 
   function updateNote(i: number, note: INote) {
@@ -128,9 +138,12 @@ export function BeatMaker() {
         <span>{tempo}</span>
       </div>
 
+      <PlayPause isPlaying={isPlaying} playToggle={handlePlay} />
+
       <InstrumentRow>
         {track.notes.map((note, i) => (
-          <div key={i}>
+          <div className={note.beat === 1 ? "bar-head" : ""} key={i}>
+            {note.beat === 1 ? "◦" : ""}
             <AppNote note={note} index={i} update={updateNote} />
           </div>
         ))}

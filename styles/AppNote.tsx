@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 interface IAppNoteProps {
-  // background: string;
   play: boolean;
+  barHead: boolean;
 }
 
 export const AppNote = styled.div`
@@ -12,6 +12,7 @@ export const AppNote = styled.div`
   border-radius: 2px;
   background-color: ${(props: IAppNoteProps) =>
     props.play ? "blue" : "transparent"};
+
   transition: 0.2s;
 
   &:hover {
@@ -20,6 +21,7 @@ export const AppNote = styled.div`
   }
 
   > div {
+    color: ${(props: IAppNoteProps) => (props.barHead ? "#fff" : "#787878")};
     pointer-events: none;
   }
 `;

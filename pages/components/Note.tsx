@@ -13,10 +13,12 @@ export default function Note({ index, note, update }: NoteProps) {
 
   //
   return (
-    <AppNote play={note.play} onClick={() => update(index, note)}>
-      <div>
-        {note.bar}:{note.beat}
-      </div>
+    <AppNote
+      play={note.play}
+      barHead={note.beat === 1}
+      onClick={() => update(index, note)}
+    >
+      <div>{index + 1}</div>
     </AppNote>
   );
 }
