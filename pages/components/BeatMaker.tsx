@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { InstrumentRow } from "../../styles/InstrumentRow";
 import { AppSelect, AppSelectContainer } from "../../styles/Select";
+import { InstrumentsControl } from "./instrumentsControl";
 import AppNote from "./Note";
 import PlayPause from "./PlayPause";
 
@@ -41,8 +42,10 @@ export function BeatMaker() {
 
   const [tempo, setTempo] = useState(120);
   const [track, setTrack] = useState(initialTrack);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [tracks, setTracks] = useState([initialTrack]);
+
   const [loop, setLoop] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const resetTrackNotes = (beats: number, clicks: number) => {
     // console.log(clicks);
@@ -59,7 +62,9 @@ export function BeatMaker() {
   };
 
   useEffect(() => {
-    // console.log(track);
+    const updatedTracks = tracks.map((trx) => track);
+    setTracks([...updatedTracks]);
+
     if (loop) {
       killLoop();
       playLoop(tempo);
@@ -75,6 +80,10 @@ export function BeatMaker() {
       killLoop();
     }
   }, [isPlaying]);
+
+  useEffect(() => {
+    console.log(tracks);
+  }, [tracks]);
 
   function handleTempoSlider(val: number) {
     // console.log(val);
@@ -178,6 +187,23 @@ export function BeatMaker() {
     }
   }
 
+  function addInstrument() {
+    const newTrack: Track = {
+      beats: track.beats,
+      clicks: track.clicks,
+      notes: track.notes,
+      intrument: "snare",
+      playing: false,
+    };
+    setTracks([...tracks, newTrack]);
+  }
+
+  function dropInstrument(index: number) {
+    const dropingTracks = tracks.filter((_, i) => i !== index);
+
+    setTracks([...dropingTracks]);
+  }
+
   return (
     <div>
       <AppSelectContainer>
@@ -206,7 +232,6 @@ export function BeatMaker() {
           ))}
         </AppSelect>
       </AppSelectContainer>
-
       <div className="tempo-slider">
         <label htmlFor="tempo">Tempo</label>
         <input
@@ -219,8 +244,9 @@ export function BeatMaker() {
         />
         <span>{tempo}</span>
       </div>
-
       <PlayPause isPlaying={isPlaying} playToggle={handlePlay} />
+
+      <InstrumentsControl add={addInstrument} drop={dropInstrument} />
 
       <InstrumentRow>
         {track.notes.map((note, i) => (
