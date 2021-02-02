@@ -76,22 +76,22 @@ export function BeatMaker() {
     }
   }, [isPlaying]);
 
-  function handleTempoSlider(val) {
+  function handleTempoSlider(val: number) {
     console.log(val);
     setTempo(val);
   }
 
-  function handleBeatsChange(val) {
+  function handleBeatsChange(val: number) {
     console.log("beats " + val);
-    const newNotes = resetTrackNotes(+val, track.bars);
-    setTrack({ ...track, beats: +val, notes: newNotes });
+    const newNotes = resetTrackNotes(val, track.bars);
+    setTrack({ ...track, beats: val, notes: newNotes });
   }
 
-  function handleBarsChange(val) {
+  function handleBarsChange(val: number) {
     console.log("bars " + val);
 
-    const newNotes = resetTrackNotes(track.beats, +val);
-    setTrack({ ...track, bars: +val, notes: newNotes });
+    const newNotes = resetTrackNotes(track.beats, val);
+    setTrack({ ...track, bars: val, notes: newNotes });
   }
 
   function handlePlay() {
@@ -107,22 +107,71 @@ export function BeatMaker() {
   }
 
   function playLoop(tempo) {
-    const beats = track.beats;
-    const bars = track.bars;
+    const totalBeats = track.beats;
+    const totalBars = track.bars;
+    const trackLength = totalBeats * totalBars;
+
+    let bar = 1;
+    let beat = 1;
+    let pos = 1;
 
     let loopInterval = setInterval(() => {
-      // let current = document.querySelector(`#bar-${bars}beat-${beats}`);
-      // console.log(current);
-      console.log(beats * bars);
+      updateUI(beat, bar, pos);
+
+      if (beat !== totalBeats) {
+        beat++;
+      } else if (beat === totalBeats) {
+        beat = 1;
+        if (bar !== totalBars) {
+          bar++;
+        } else if (bar === totalBars) {
+          bar = 1;
+        }
+      }
+
+      if (bar === 1 && beat === 1) {
+        pos = 1;
+      } else {
+        pos++;
+      }
     }, Math.round(60_000 / tempo));
 
     setLoop(loopInterval);
-
-    console.log("startLoop");
   }
 
   function killLoop() {
     setLoop(clearInterval(loop));
+    clearUI();
+  }
+
+  function updateUI(beat: number, bar: number, pos: number) {
+    // console.log({ beat, bar, pos });
+    const curentNoteEl = document.querySelector(`#bar-${bar}-beat-${beat}`);
+    const previousNoteEl = (beat, bar) => {
+      if (bar === 1 && beat === 1) {
+        // pega a última div
+        return document.querySelector(`#bar-${track.bars}-beat-${track.beats}`);
+      } else {
+        // pega a anterior
+        if (beat !== 1) {
+          return document.querySelector(`#bar-${bar}-beat-${beat - 1}`);
+        } else {
+          return document.querySelector(`#bar-${bar - 1}-beat-${track.beats}`);
+        }
+      }
+    };
+
+    curentNoteEl.classList.add("current-note");
+    previousNoteEl(beat, bar).classList.remove("current-note");
+    console.log(curentNoteEl);
+  }
+  function clearUI() {
+    const remainingEl = document.querySelector(".current-note");
+
+    if (remainingEl) {
+      console.log(remainingEl);
+      remainingEl.classList.remove("current-note");
+    }
   }
 
   return (
@@ -131,7 +180,7 @@ export function BeatMaker() {
         <label htmlFor="beats">Beats</label>
         <AppSelect
           name="beats"
-          onChange={(e) => handleBeatsChange(e.target.value)}
+          onChange={(e) => handleBeatsChange(+e.target.value)}
           value={track.beats}
         >
           {beatOptions.map((v) => (
@@ -145,7 +194,7 @@ export function BeatMaker() {
         <label htmlFor="bars">Bars</label>
         <AppSelect
           name="bars"
-          onChange={(e) => handleBarsChange(e.target.value)}
+          onChange={(e) => handleBarsChange(+e.target.value)}
           value={track.bars}
         >
           {barOptions.map((b) => (
@@ -162,7 +211,7 @@ export function BeatMaker() {
           min="20"
           max="400"
           value={tempo}
-          onChange={(e) => handleTempoSlider(e.target.value)}
+          onChange={(e) => handleTempoSlider(+e.target.value)}
         />
         <span>{tempo}</span>
       </div>

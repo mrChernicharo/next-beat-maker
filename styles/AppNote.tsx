@@ -20,6 +20,10 @@ export const AppNote = styled.div`
     opacity: 0.82;
   }
 
+  &.current-note {
+    border-bottom: 3px solid red;
+  }
+
   > div {
     color: ${(props: IAppNoteProps) => (props.barHead ? "#fff" : "#787878")};
     pointer-events: none;
