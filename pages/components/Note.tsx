@@ -17,7 +17,7 @@ export default function Note({ id, index, note, update }: NoteProps) {
     <AppNote
       id={id}
       play={note.play}
-      barHead={note.beat === 1}
+      clickHead={note.beat === 1}
       onClick={() => update(index, note)}
     >
       <div>{index + 1}</div>

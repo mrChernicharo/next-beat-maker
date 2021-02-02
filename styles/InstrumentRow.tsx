@@ -14,7 +14,7 @@ export const InstrumentRow = styled.div`
     flex-direction: column;
     justify-content: flex-end;
 
-    &.bar-head {
+    &.click-head {
       margin-left: 20px;
     }
 

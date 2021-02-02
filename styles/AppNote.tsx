@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 interface IAppNoteProps {
   play: boolean;
-  barHead: boolean;
+  clickHead: boolean;
 }
 
 export const AppNote = styled.div`
@@ -25,7 +25,7 @@ export const AppNote = styled.div`
   }
 
   > div {
-    color: ${(props: IAppNoteProps) => (props.barHead ? "#fff" : "#787878")};
+    color: ${(props: IAppNoteProps) => (props.clickHead ? "#fff" : "#787878")};
     pointer-events: none;
   }
 `;
