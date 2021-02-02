@@ -42,7 +42,7 @@ export function BeatMaker() {
   const [tempo, setTempo] = useState(120);
   const [track, setTrack] = useState(initialTrack);
   const [isPlaying, setIsPlaying] = useState(false);
-  // const [notes, setNotes] = useState(initialNotes);
+  const [loop, setLoop] = useState(null);
 
   const resetTrackNotes = (beats: number, bars: number) => {
     console.log(bars);
@@ -60,10 +60,20 @@ export function BeatMaker() {
 
   useEffect(() => {
     console.log(track);
+    if (loop) {
+      killLoop();
+      playLoop(tempo);
+    }
   }, [track.bars, track.beats, track.notes]);
 
   useEffect(() => {
     console.log("playing -> " + isPlaying);
+
+    if (isPlaying) {
+      playLoop(tempo);
+    } else {
+      killLoop();
+    }
   }, [isPlaying]);
 
   function handleTempoSlider(val) {
@@ -94,6 +104,25 @@ export function BeatMaker() {
     });
 
     setTrack({ ...track, notes: updatedTrack });
+  }
+
+  function playLoop(tempo) {
+    const beats = track.beats;
+    const bars = track.bars;
+
+    let loopInterval = setInterval(() => {
+      // let current = document.querySelector(`#bar-${bars}beat-${beats}`);
+      // console.log(current);
+      console.log(beats * bars);
+    }, Math.round(60_000 / tempo));
+
+    setLoop(loopInterval);
+
+    console.log("startLoop");
+  }
+
+  function killLoop() {
+    setLoop(clearInterval(loop));
   }
 
   return (
@@ -144,7 +173,12 @@ export function BeatMaker() {
         {track.notes.map((note, i) => (
           <div className={note.beat === 1 ? "bar-head" : ""} key={i}>
             {note.beat === 1 ? "◦" : ""}
-            <AppNote note={note} index={i} update={updateNote} />
+            <AppNote
+              id={`bar-${note.bar}-beat-${note.beat}`}
+              note={note}
+              index={i}
+              update={updateNote}
+            />
           </div>
         ))}
       </InstrumentRow>
